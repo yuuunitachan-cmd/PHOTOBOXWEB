@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniBox ✨ Galeri</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="gallery-page">
+
+  <!-- NAV -->
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-emoji">📸</span>
+      <span class="nav-logo-text">AniBox</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" data-page="editor" href="editor.html">✏️ Editor</a>
+      <a class="nav-link active" data-page="gallery" href="gallery.html">🖼️ Galeri</a>
+      <a class="nav-link" href="index.html">🎨 Ganti Tema</a>
+    </div>
+    <div class="nav-theme-badge" id="navThemeBadge">🌸 Kawaii</div>
+  </nav>
+
+  <!-- GALLERY HEADER -->
+  <div class="gallery-hero">
+    <h1 class="gallery-title" id="galleryTitle">🖼️ Galeri Foto</h1>
+    <p class="gallery-sub" id="gallerySub">Semua foto yang kamu buat tersimpan di sini~</p>
+  </div>
+
+  <!-- GALLERY GRID -->
+  <div class="gallery-grid" id="galleryGrid">
+    <!-- filled by JS -->
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    function loadGallery() {
+      const grid  = document.getElementById('galleryGrid');
+      const sub   = document.getElementById('gallerySub');
+      const items = JSON.parse(localStorage.getItem('anibox-gallery') || '[]');
+
+      if (items.length === 0) {
+        grid.innerHTML = `
+          <div class="gallery-empty">
+            <div class="gallery-empty-icon">📷</div>
+            <h3>Galeri masih kosong~</h3>
+            <p>Belum ada foto yang disimpan. Yuk bikin sekarang!</p>
+            <a href="editor.html" class="go-editor-btn">✏️ Buka Editor</a>
+          </div>`;
+        return;
+      }
+
+      sub.textContent = `${items.length} foto tersimpan ✨`;
+      grid.innerHTML = '';
+
+      items.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'gallery-card';
+        card.innerHTML = `
+          <img src="${item.src}" alt="Foto ${idx + 1}" loading="lazy">
+          <div class="gallery-card-footer">
+            <span class="gallery-card-date">📅 ${item.date || 'Baru'}</span>
+            <div class="gallery-card-actions">
+              <button class="gallery-btn download" onclick="downloadGalleryPhoto(${idx})">📥</button>
+              <button class="gallery-btn delete" onclick="deletePhoto(${idx})">🗑️</button>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function downloadGalleryPhoto(idx) {
+      const items = JSON.parse(localStorage.getItem('anibox-gallery') || '[]');
+      if (!items[idx]) return;
+      const a = document.createElement('a');
+      a.href = items[idx].src;
+      a.download = `anibox-${Date.now()}.jpg`;
+      a.click();
+      showToast('📥 Foto didownload!');
+    }
+
+    function deletePhoto(idx) {
+      const items = JSON.parse(localStorage.getItem('anibox-gallery') || '[]');
+      items.splice(idx, 1);
+      localStorage.setItem('anibox-gallery', JSON.stringify(items));
+      showToast('🗑️ Foto dihapus');
+      loadGallery();
+    }
+
+    // Load on page ready
+    document.addEventListener('DOMContentLoaded', loadGallery);
+  </script>
+
+</body>
+</html>

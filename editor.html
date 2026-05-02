@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniBox ✨ Editor</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="editor-page">
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-emoji">📸</span>
+      <span class="nav-logo-text">AniBox</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link active" data-page="editor" href="editor.html">✏️ Editor</a>
+      <a class="nav-link" data-page="gallery" href="gallery.html">🖼️ Galeri</a>
+      <a class="nav-link" href="index.html">🎨 Ganti Tema</a>
+    </div>
+    <div class="nav-theme-badge" id="navThemeBadge">🌸 Kawaii</div>
+  </nav>
+
+  <!-- ===== EDITOR LAYOUT ===== -->
+  <div class="editor-layout">
+
+    <!-- ===== LEFT PANEL ===== -->
+    <aside class="panel-left">
+
+      <!-- Strip Layout -->
+      <div>
+        <div class="panel-section-title">📐 Layout Strip</div>
+        <div class="strip-picker">
+          <button class="strip-btn active" title="1 foto">
+            <div class="strip-icon"><div class="s-bar"></div></div>
+            1×
+          </button>
+          <button class="strip-btn" title="2 foto">
+            <div class="strip-icon"><div class="s-bar"></div><div class="s-bar"></div></div>
+            2×
+          </button>
+          <button class="strip-btn" title="3 foto">
+            <div class="strip-icon"><div class="s-bar"></div><div class="s-bar"></div><div class="s-bar"></div></div>
+            3×
+          </button>
+          <button class="strip-btn" title="4 foto">
+            <div class="strip-icon"><div class="s-bar"></div><div class="s-bar"></div><div class="s-bar"></div><div class="s-bar"></div></div>
+            4×
+          </button>
+        </div>
+      </div>
+
+      <!-- Upload Photos -->
+      <div>
+        <div class="panel-section-title">📸 Upload Foto</div>
+        <p class="hint-text" style="margin-bottom:10px;">
+          💡 Klik slot untuk upload, atau drag & drop foto ke canvas
+        </p>
+        <div id="uploadSlots"></div>
+      </div>
+
+      <!-- BG Color -->
+      <div>
+        <div class="panel-section-title">🎨 Warna Latar</div>
+        <div id="bgColorPanel"></div>
+      </div>
+
+    </aside>
+
+    <!-- ===== CENTER CANVAS ===== -->
+    <main class="editor-center">
+
+      <div id="canvasWrapper" class="canvas-wrapper">
+        <canvas id="mainCanvas"></canvas>
+        <div id="stickerLayer"></div>
+      </div>
+
+      <div class="canvas-actions">
+        <button class="action-btn" onclick="downloadPhoto()">📥 Download Foto</button>
+        <button class="action-btn" onclick="saveToGallery()">💾 Simpan ke Galeri</button>
+        <button class="action-btn secondary" onclick="clearStickers()">🧹 Hapus Stiker</button>
+      </div>
+
+      <p class="hint-text" style="max-width: 400px; text-align: center;">
+        ✨ Pilih stiker di kanan lalu klik area foto untuk menaruhnya.<br>
+        Drag stiker untuk memindahkan posisinya!
+      </p>
+
+    </main>
+
+    <!-- ===== RIGHT PANEL ===== -->
+    <aside class="panel-right">
+
+      <!-- Filters -->
+      <div>
+        <div class="panel-section-title">🎞️ Filter Foto</div>
+        <div id="filtersPanel"></div>
+      </div>
+
+      <!-- Frames -->
+      <div>
+        <div class="panel-section-title">🖼️ Frame</div>
+        <div id="framesPanel"></div>
+      </div>
+
+      <!-- Stickers -->
+      <div>
+        <div class="panel-section-title">✨ Stiker Anime</div>
+        <p class="hint-text" style="margin-bottom:8px;">Pilih stiker → klik canvas untuk menaruh</p>
+        <div id="stickersPanel"></div>
+      </div>
+
+    </aside>
+
+  </div><!-- /editor-layout -->
+
+  <script src="js/main.js"></script>
+  <script src="js/editor.js"></script>
+
+</body>
+</html>

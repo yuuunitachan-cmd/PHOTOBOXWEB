@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniBox ✨ Anime Photobox Studio</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Floating particles background -->
+  <div class="particles-bg" id="particles"></div>
+
+  <div class="landing-container">
+
+    <!-- Header / Logo -->
+    <header class="landing-header">
+      <div class="header-logo">
+        <span class="header-logo-emoji">📸</span>
+        <span class="header-logo-text">AniBox</span>
+      </div>
+      <p class="header-tagline">✨ Anime Photobox Studio ✨</p>
+    </header>
+
+    <!-- Theme Selector -->
+    <section class="selector-section">
+      <h2 class="selector-title">Pilih Vibe Kamu~ 🎨</h2>
+      <p class="selector-sub">Setiap tema punya dunia sendiri. Mana yang cocok sama hari ini?</p>
+
+      <div class="themes-grid">
+
+        <!-- KAWAII PASTEL -->
+        <div class="theme-card kawaii" onclick="selectTheme('kawaii')">
+          <div class="card-deco-row">
+            <span>🌸</span><span>💖</span><span>✨</span><span>🎀</span><span>⭐</span>
+          </div>
+          <div class="card-body">
+            <div class="card-main-icon">🌸</div>
+            <h3 class="card-title-kawaii">Kawaii Pastel</h3>
+            <p class="card-desc-kawaii">Cute & dreamy dengan pink, sakura,<br>dan bintang berkilau~</p>
+            <div class="card-tags">
+              <span>💕 Pastel</span>
+              <span>🌸 Sakura</span>
+              <span>⭐ Sparkle</span>
+            </div>
+          </div>
+          <button class="pick-btn">Pilih ini! ✨</button>
+        </div>
+
+        <!-- DARK AESTHETIC -->
+        <div class="theme-card dark-ae" onclick="selectTheme('dark')">
+          <div class="card-deco-row">
+            <span>🌙</span><span>⚡</span><span>💜</span><span>🔮</span><span>✨</span>
+          </div>
+          <div class="card-body">
+            <div class="card-main-icon">🌙</div>
+            <h3 class="card-title-dark">DARK AESTHETIC</h3>
+            <p class="card-desc-dark">GELAP, NEON & MYSTERIOUS.<br>UNTUK JIWA YANG COOL.</p>
+            <div class="card-tags">
+              <span>🌙 Dark</span>
+              <span>⚡ Neon</span>
+              <span>🔮 Mystic</span>
+            </div>
+          </div>
+          <button class="pick-btn">PILIH INI! ⚡</button>
+        </div>
+
+        <!-- SHONEN ACTION -->
+        <div class="theme-card shonen" onclick="selectTheme('shonen')">
+          <div class="card-deco-row">
+            <span>🔥</span><span>💥</span><span>⚡</span><span>🏆</span><span>💪</span>
+          </div>
+          <div class="card-body">
+            <div class="card-main-icon">🔥</div>
+            <h3 class="card-title-shonen">Shonen Action!</h3>
+            <p class="card-desc-shonen">Bold, energik, penuh semangat<br>kayak main karakter anime!</p>
+            <div class="card-tags">
+              <span>🔥 Fire</span>
+              <span>💥 Action</span>
+              <span>⚡ Power</span>
+            </div>
+          </div>
+          <button class="pick-btn">PILIH INI! 🔥</button>
+        </div>
+
+        <!-- STUDIO GHIBLI -->
+        <div class="theme-card ghibli" onclick="selectTheme('ghibli')">
+          <div class="card-deco-row">
+            <span>🌿</span><span>🍃</span><span>☁️</span><span>🌻</span><span>🦋</span>
+          </div>
+          <div class="card-body">
+            <div class="card-main-icon">🌿</div>
+            <h3 class="card-title-ghibli">Studio Ghibli</h3>
+            <p class="card-desc-ghibli">Tenang, natural & magical<br>seperti dunia film Ghibli~</p>
+            <div class="card-tags">
+              <span>🌿 Natural</span>
+              <span>☁️ Dreamy</span>
+              <span>✨ Magic</span>
+            </div>
+          </div>
+          <button class="pick-btn">Pilih ini! 🌿</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer hint -->
+    <p style="text-align:center; margin-top:50px; opacity:0.5; font-size:0.85rem;">
+      Kamu bisa ganti tema kapanpun dari halaman editor ✨
+    </p>
+
+  </div><!-- /landing-container -->
+
+  <script src="js/main.js"></script>
+
+</body>
+</html>
