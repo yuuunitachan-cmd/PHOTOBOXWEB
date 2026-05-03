@@ -4,9 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AniBox ✨ Galeri</title>
-  <link rel="stylesheet" href="CSS/style.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    (function() {
+      var t = localStorage.getItem('anibox-theme') || 'kawaii';
+      document.addEventListener('DOMContentLoaded', function() {
+        document.body.classList.remove('theme-kawaii','theme-dark','theme-shonen','theme-ghibli');
+        document.body.classList.add('theme-' + t);
+      });
+    })();
+  </script>
 </head>
-<body class="gallery-page">
+<body class="gallery-page theme-kawaii">
 
   <!-- NAV -->
   <nav class="nav-bar">

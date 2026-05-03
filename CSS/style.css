@@ -535,14 +535,30 @@ body.theme-shonen .theme-card.shonen { box-shadow: 4px 4px 0 #fbbf24; }
 
 /* Responsive */
 @media (max-width: 900px) {
-  .editor-layout { grid-template-columns: 1fr; height: auto; }
-  .panel-left, .panel-right { border: none; border-bottom: 2px solid var(--border); }
+  .editor-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .panel-left, .panel-right {
+    border: none;
+    border-bottom: 2px solid var(--border);
+    max-height: none;
+  }
+  .editor-center { padding: 16px; }
+  #mainCanvas { max-width: 100% !important; }
   .themes-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 600px) {
   .themes-grid { grid-template-columns: 1fr; }
   .header-logo-text { font-size: 2.5rem; }
+  .nav-links { gap: 4px; }
+  .nav-link { padding: 6px 10px; font-size: 0.8rem; }
+  .canvas-actions { flex-direction: column; align-items: center; }
+  .action-btn { width: 100%; max-width: 280px; justify-content: center; }
 }
+
+/* Force hide file input everywhere */
+input[type="file"] { display: none !important; }
 
 /* =============================================
    CAMERA MODAL

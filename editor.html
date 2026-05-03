@@ -5,8 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AniBox ✨ Editor</title>
   <link rel="stylesheet" href="css/style.css">
+  <!-- Apply theme immediately to avoid flash of unstyled content -->
+  <script>
+    (function() {
+      var t = localStorage.getItem('anibox-theme') || 'kawaii';
+      document.documentElement.setAttribute('data-theme-preload', t);
+      document.addEventListener('DOMContentLoaded', function() {
+        document.body.classList.remove('theme-kawaii','theme-dark','theme-shonen','theme-ghibli');
+        document.body.classList.add('theme-' + t);
+      });
+    })();
+  </script>
 </head>
-<body class="editor-page">
+<body class="editor-page theme-kawaii">
 
   <!-- ===== NAV ===== -->
   <nav class="nav-bar">
