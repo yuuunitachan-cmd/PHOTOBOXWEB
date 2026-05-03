@@ -15,6 +15,11 @@ let state = {
   stickers: [],           // [{emoji, x, y, id}] placed stickers
 };
 
+// --- CAMERA STATE ---
+let camStream    = null;   // MediaStream from getUserMedia
+let camSlotTarget = 0;     // which slot the camera photo will go into
+let countdown    = null;   // countdown interval
+
 // --- CONSTANTS ---
 const PHOTO_W   = 300;
 const PHOTO_H   = 260;
@@ -686,7 +691,6 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault(); wrapper.style.outline = '';
       const file = e.dataTransfer.files[0];
       if (!file || !file.type.startsWith('image/')) return;
-      // Find first empty slot
       const idx = state.photos.findIndex(p => p === null);
       if (idx === -1) { showToast('❗ Semua slot sudah terisi!'); return; }
       const reader = new FileReader();
@@ -700,3 +704,192 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// =============================================
+//  CAMERA (WEBCAM) FUNCTIONS
+// =============================================
+
+// Open camera modal for a specific slot (or next empty slot)
+async function openCamera(slotIdx) {
+  // Determine target slot
+  if (slotIdx !== undefined) {
+    camSlotTarget = slotIdx;
+  } else {
+    const next = state.photos.findIndex(p => p === null);
+    camSlotTarget = next === -1 ? 0 : next;
+  }
+
+  const modal = document.getElementById('cameraModal');
+  const video = document.getElementById('camVideo');
+  const slotLabel = document.getElementById('camSlotLabel');
+  if (slotLabel) slotLabel.textContent = `Foto untuk Slot ${camSlotTarget + 1}`;
+
+  modal.classList.add('open');
+
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+      audio: false,
+    });
+    video.srcObject = camStream;
+    video.play();
+    document.getElementById('camError').style.display = 'none';
+    document.getElementById('camControls').style.display = 'flex';
+  } catch (err) {
+    document.getElementById('camError').style.display = 'block';
+    document.getElementById('camError').textContent =
+      '❌ Kamera tidak bisa diakses. Pastikan kamu izinkan akses kamera di browser ya!';
+    document.getElementById('camControls').style.display = 'none';
+    console.error('Camera error:', err);
+  }
+}
+
+function closeCamera() {
+  stopCamera();
+  document.getElementById('cameraModal').classList.remove('open');
+  clearCountdown();
+}
+
+function stopCamera() {
+  if (camStream) {
+    camStream.getTracks().forEach(t => t.stop());
+    camStream = null;
+  }
+  const video = document.getElementById('camVideo');
+  if (video) video.srcObject = null;
+}
+
+// Flip camera (front <-> back) — useful on mobile
+async function flipCamera() {
+  if (!camStream) return;
+  const track = camStream.getVideoTracks()[0];
+  const settings = track.getSettings();
+  const currentFacing = settings.facingMode || 'user';
+  const newFacing = currentFacing === 'user' ? 'environment' : 'user';
+  stopCamera();
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: newFacing }, audio: false,
+    });
+    const video = document.getElementById('camVideo');
+    video.srcObject = camStream;
+    video.play();
+    showToast(newFacing === 'user' ? '🤳 Kamera depan' : '📸 Kamera belakang');
+  } catch (e) {
+    showToast('❌ Tidak bisa ganti kamera');
+  }
+}
+
+// Snap photo immediately
+function snapPhoto() {
+  const video = document.getElementById('camVideo');
+  if (!video || !camStream) return;
+
+  // Flash effect
+  const flash = document.getElementById('camFlash');
+  flash.style.opacity = '1';
+  setTimeout(() => { flash.style.opacity = '0'; }, 300);
+
+  // Draw video frame to offscreen canvas
+  const snap = document.createElement('canvas');
+  snap.width  = video.videoWidth  || 640;
+  snap.height = video.videoHeight || 480;
+  const ctx = snap.getContext('2d');
+  // Mirror (flip horizontally for selfie cam)
+  ctx.translate(snap.width, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(video, 0, 0, snap.width, snap.height);
+
+  const dataUrl = snap.toDataURL('image/jpeg', 0.92);
+  const img = new Image();
+  img.onload = () => {
+    state.photos[camSlotTarget] = img;
+    updateSlotPreview(camSlotTarget, dataUrl);
+    renderCanvas();
+    closeCamera();
+    showToast(`📸 Foto ${camSlotTarget + 1} berhasil diambil!`);
+  };
+  img.src = dataUrl;
+}
+
+// Countdown timer before snap (3, 2, 1, 📸)
+function startCountdown() {
+  clearCountdown();
+  let count = 3;
+  const display = document.getElementById('countdownDisplay');
+  display.textContent = count;
+  display.classList.add('show');
+
+  countdown = setInterval(() => {
+    count--;
+    if (count > 0) {
+      display.textContent = count;
+    } else {
+      display.textContent = '📸';
+      clearInterval(countdown);
+      countdown = null;
+      setTimeout(() => {
+        display.classList.remove('show');
+        snapPhoto();
+      }, 400);
+    }
+  }, 1000);
+}
+
+function clearCountdown() {
+  if (countdown) { clearInterval(countdown); countdown = null; }
+  const d = document.getElementById('countdownDisplay');
+  if (d) d.classList.remove('show');
+}
+
+// Auto-snap multiple photos in sequence (for strip)
+async function autoSnapStrip() {
+  const total = state.photoCount;
+  showToast(`📸 Auto snap: ${total} foto, interval 3 detik`);
+
+  for (let i = 0; i < total; i++) {
+    camSlotTarget = i;
+    const slotLabel = document.getElementById('camSlotLabel');
+    if (slotLabel) slotLabel.textContent = `Foto ${i + 1} dari ${total}`;
+    await new Promise(resolve => {
+      let c = 3;
+      const display = document.getElementById('countdownDisplay');
+      display.textContent = c;
+      display.classList.add('show');
+      const iv = setInterval(() => {
+        c--;
+        if (c > 0) { display.textContent = c; }
+        else {
+          display.textContent = '📸';
+          clearInterval(iv);
+          setTimeout(() => {
+            display.classList.remove('show');
+            const video = document.getElementById('camVideo');
+            if (video && camStream) {
+              const snap = document.createElement('canvas');
+              snap.width = video.videoWidth || 640;
+              snap.height = video.videoHeight || 480;
+              const ctx = snap.getContext('2d');
+              ctx.translate(snap.width, 0); ctx.scale(-1, 1);
+              ctx.drawImage(video, 0, 0, snap.width, snap.height);
+              const dataUrl = snap.toDataURL('image/jpeg', 0.92);
+              const img = new Image();
+              img.onload = () => {
+                state.photos[i] = img;
+                updateSlotPreview(i, dataUrl);
+                renderCanvas();
+                resolve();
+              };
+              img.src = dataUrl;
+            } else resolve();
+          }, 400);
+        }
+      }, 1000);
+    });
+    // small gap between shots
+    if (i < total - 1) await new Promise(r => setTimeout(r, 600));
+  }
+
+  closeCamera();
+  showToast(`🎉 ${total} foto strip selesai!`);
+}

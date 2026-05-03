@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AniBox ✨ Editor</title>
-  <link rel="stylesheet" href="CSS/style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="editor-page">
 
@@ -55,8 +55,12 @@
       <div>
         <div class="panel-section-title">📸 Upload Foto</div>
         <p class="hint-text" style="margin-bottom:10px;">
-          💡 Klik slot untuk upload, atau drag & drop foto ke canvas
+          💡 Klik slot untuk upload file, atau pakai kamera langsung!
         </p>
+        <!-- Camera button -->
+        <button class="cam-open-btn" onclick="openCamera()">
+          <span>📷</span> Buka Kamera
+        </button>
         <div id="uploadSlots"></div>
       </div>
 
@@ -117,6 +121,49 @@
 
   <script src="js/main.js"></script>
   <script src="js/editor.js"></script>
+
+  <!-- ===== CAMERA MODAL ===== -->
+  <div id="cameraModal" class="cam-modal">
+    <div class="cam-modal-inner">
+
+      <div class="cam-modal-header">
+        <h2 class="cam-title">📷 Kamera Langsung</h2>
+        <span id="camSlotLabel" class="cam-slot-label">Foto untuk Slot 1</span>
+        <button class="cam-close-btn" onclick="closeCamera()">✕</button>
+      </div>
+
+      <!-- Video preview -->
+      <div class="cam-video-wrap">
+        <video id="camVideo" autoplay playsinline muted></video>
+        <div id="camFlash" class="cam-flash"></div>
+        <div id="countdownDisplay" class="cam-countdown"></div>
+      </div>
+
+      <!-- Error message -->
+      <div id="camError" class="cam-error" style="display:none"></div>
+
+      <!-- Controls -->
+      <div id="camControls" class="cam-controls" style="display:none">
+        <button class="cam-btn cam-btn-flip" onclick="flipCamera()" title="Ganti kamera">
+          🔄 Balik
+        </button>
+        <button class="cam-btn cam-btn-timer" onclick="startCountdown()" title="Foto dengan hitung mundur">
+          ⏱️ 3, 2, 1...
+        </button>
+        <button class="cam-btn cam-btn-snap" onclick="snapPhoto()" title="Ambil foto sekarang">
+          📸 Foto!
+        </button>
+        <button class="cam-btn cam-btn-auto" onclick="autoSnapStrip()" title="Auto ambil semua slot">
+          🎞️ Auto Strip
+        </button>
+      </div>
+
+      <p class="cam-hint">
+        💡 <b>Auto Strip</b>: otomatis foto semua slot satu per satu dengan hitung mundur!
+      </p>
+
+    </div>
+  </div>
 
 </body>
 </html>
